@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">nPictureSlider</string>
+
+    <string-array name="puzzle_size">
+        <item value="3">3x3</item>
+        <item value="4">4x4</item>
+        <item value="5">5x5</item>
+        <item value="6">6x6</item>
+        <item value="7">7x7</item>
+        <item value="8">8x8</item>
+        <item value="9">9x9</item>
+    </string-array>
+</resources>
