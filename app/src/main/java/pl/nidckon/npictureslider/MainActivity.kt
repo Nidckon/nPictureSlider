@@ -2,16 +2,17 @@ package pl.nidckon.npictureslider
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.ListView
 import pl.nidckon.npictureslider.Settings.Companion.const
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.settings -> {
                 val settingsIntent = Intent(baseContext, SettingsActivity::class.java)
                 startActivity(settingsIntent)
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun initGallery(){
+    private fun initGallery() {
         val galleryList = getAssetsGalleryList()
         log.i(this, "<< GalleryList-Size: ${galleryList.size}")
         val container = findViewById<ListView>(R.id.container)
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         container.invalidate()
     }
 
-    private fun getAssetsGalleryList():List<String>{
+    private fun getAssetsGalleryList(): List<String> {
         val path = "gallery"
         val list = assets.list(path)
         return list.map { name -> "$path/$name" }
@@ -80,8 +81,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private inner class GalleryAdapter(private val paths:List<String>) : BaseAdapter(){
-        private val list:Map<String, Bitmap> = HashMap()
+    private inner class GalleryAdapter(private val paths: List<String>) : BaseAdapter() {
+        private val list: Map<String, Bitmap> = HashMap()
 
         init {
             paths.forEach { imagePath -> createEntry(imagePath) }

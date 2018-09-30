@@ -5,7 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.support.annotation.LayoutRes
-import android.view.*
+import android.view.Display
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
 // to inflate in BaseAdapter
 fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
@@ -53,16 +56,16 @@ fun Bitmap.cut(col: Int, row: Int, COLS: Int, ROWS: Int): Bitmap {
     val width = this.width / COLS
     val height = this.height / ROWS
     Logger.get().d(this, "custom size: [$width x $height]")
-    val startWidth = width * if (col > COLS) COLS-1 else col
-    val startHeight = height * if (row > ROWS) ROWS-1 else row
+    val startWidth = width * if (col > COLS) COLS - 1 else col
+    val startHeight = height * if (row > ROWS) ROWS - 1 else row
     Logger.get().d(this, "custom start-size: [$startWidth x $startHeight]")
     return Bitmap.createBitmap(this, startWidth, startHeight, width, height)
 }
 
 fun Bitmap.cut(position: Int, COLS: Int, ROWS: Int): Bitmap {
     val parts = COLS * ROWS
-    val col = if (parts > position) parts % COLS else COLS-1
-    val row = if (parts > position) parts / ROWS else ROWS-1
+    val col = if (parts > position) parts % COLS else COLS - 1
+    val row = if (parts > position) parts / ROWS else ROWS - 1
     return this.cut(col, row, COLS, ROWS)
 }
 

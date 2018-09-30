@@ -1,6 +1,6 @@
 package pl.nidckon.npictureslider
 
-class Settings private constructor(){
+class Settings private constructor() {
     var size: Int = 4
     val MIN = 3
     val MAX = 9
@@ -13,7 +13,7 @@ class Settings private constructor(){
 
         fun getSettings() = settings
 
-        class CONST{
+        class CONST {
             val PREF_NAME = "pictureslider"
             val TIME = "time"
             val SIZE = "size"

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-class Logger private constructor(){
+class Logger private constructor() {
     private val log = StringBuilder()
 
     companion object {
@@ -15,7 +15,7 @@ class Logger private constructor(){
         fun get() = logger
     }
 
-    private fun formattedLine(what:String, msg:String):String = "nPS:${formatExecuter(what)}: $msg"
+    private fun formattedLine(what: String, msg: String): String = "nPS:${formatExecuter(what)}: $msg"
 
     private fun formatExecuter(executer: String): String {
         val list = executer.split(".")
@@ -30,17 +30,17 @@ class Logger private constructor(){
         return result.toString()
     }
 
-    fun d(executer:Any, msg: String) {
+    fun d(executer: Any, msg: String) {
         log.appendln(formattedLine(executer::class.java.name, msg))
         Log.d("nPS:${formatExecuter(executer::class.java.name)}", msg)
     }
 
     fun i(executer: Any, msg: String) {
-            log.appendln(formattedLine(executer::class.java.name, msg))
+        log.appendln(formattedLine(executer::class.java.name, msg))
         Log.i("nPS:${formatExecuter(executer::class.java.name)}", msg)
     }
 
-    fun prepareEmail(ctx: Context): Intent{
+    fun prepareEmail(ctx: Context): Intent {
         val separator = "\r\n--------------------------------\r\n"
         val type = "text/plain"
         val device_info = getDeviceInfo(ctx)
@@ -63,7 +63,7 @@ class Logger private constructor(){
         return intent
     }
 
-    private fun getDeviceInfo(ctx:Context) = """
+    private fun getDeviceInfo(ctx: Context) = """
             Linux-OS: ${System.getProperty("os.version")}
             --
             CodeName: ${android.os.Build.VERSION.CODENAME}
