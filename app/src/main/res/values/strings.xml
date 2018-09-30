@@ -10,4 +10,19 @@
         <item value="8">8x8</item>
         <item value="9">9x9</item>
     </string-array>
+
+    <string-array name="preview_time">
+        <item value="-1">∞</item>
+        <item value="3">3</item>
+        <item value="5">5</item>
+        <item value="10">10</item>
+    </string-array>
+
+    <string-array name="preview_time_values">
+        <item value="-1">-1</item>
+        <item value="3">3</item>
+        <item value="5">5</item>
+        <item value="10">10</item>
+    </string-array>
+
 </resources>
