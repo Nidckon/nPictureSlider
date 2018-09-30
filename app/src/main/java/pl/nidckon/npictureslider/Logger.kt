@@ -2,6 +2,7 @@ package pl.nidckon.npictureslider
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 
 class Logger private constructor(){
     private val log = StringBuilder()
@@ -9,7 +10,7 @@ class Logger private constructor(){
     companion object {
         private val logger = Logger()
         private val version = BuildConfig.VERSION_NAME
-        private val release =s "alpha"
+        private val release = "alpha"
 
         fun get() = logger
     }
@@ -29,11 +30,15 @@ class Logger private constructor(){
         return result.toString()
     }
 
-    fun d(executer:Any, msg: String) =
-            log.appendln(formattedLine(executer::class.java.name, msg))
+    fun d(executer:Any, msg: String) {
+        log.appendln(formattedLine(executer::class.java.name, msg))
+        Log.d("nPS:${formatExecuter(executer::class.java.name)}", msg)
+    }
 
-    fun i(executer: Any, msg: String) =
+    fun i(executer: Any, msg: String) {
             log.appendln(formattedLine(executer::class.java.name, msg))
+        Log.i("nPS:${formatExecuter(executer::class.java.name)}", msg)
+    }
 
     fun prepareEmail(ctx: Context): Intent{
         val separator = "\r\n--------------------------------\r\n"
