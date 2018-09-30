@@ -71,20 +71,24 @@ class GameActivity : AppCompatActivity() {
 
     private fun showHideTemporaryAction(isVisible: Boolean = false) {
         if (isVisible) {
+            log.i(this, "Show-Hide Temporary: isVisible[$isVisible] + operation: Hide")
             this.counter = 0
             preview?.visibility = View.INVISIBLE
         } else {
             val previewManager = ShowHidePreviewManager()
             this.counter = Settings.getSettings().previewTime
+            log.i(this, "Show-Hide Temporary: isVisible[$isVisible] + counter[$counter] + operation: Show")
             previewManager.execute()
         }
     }
 
     private fun showHideAction(hide:Boolean = true) {
         if (hide) {
+            log.i(this, "Show-Hide Action: want to hide[$hide], counter[$counter]")
             counter = 0
             preview?.visibility = View.INVISIBLE
         } else {
+            log.i(this, "Show-Hide Action: want to hide[$hide], counter[$counter]")
             counter = -1
             preview?.visibility = View.VISIBLE
         }
@@ -93,11 +97,14 @@ class GameActivity : AppCompatActivity() {
     private inner class ShowHidePreviewManager : AsyncTask<Any, Double, Boolean>() {
         private var lastToast: Toast? = null
         override fun onProgressUpdate(vararg values: Double?) {
-            lastToast = Toast.makeText(baseContext, "${values[0]?.toInt()?.plus(1)}s", Toast.LENGTH_SHORT)
+            val showValue = values[0]?.toInt()?.plus(1)
+            log.i(this, "Preview-Update: time[$showValue]")
+            lastToast = Toast.makeText(baseContext, "${showValue}s", Toast.LENGTH_SHORT)
             lastToast?.show()
         }
 
         override fun onPreExecute() {
+            log.i(this, "Preview-Pre: show Preview")
             preview?.visibility = View.VISIBLE
         }
 
@@ -107,6 +114,7 @@ class GameActivity : AppCompatActivity() {
                 if (innerCounter >= 1.0) {
                     innerCounter = 0.0
                     counter--
+                    log.i(this, "Preview-Timer: 1s elapsed, counter[$counter]")
                 }
                 Thread.sleep(100)
                 innerCounter += 0.1
@@ -116,6 +124,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: Boolean?) {
+            log.i(this, "Preview-Post: hide Preview")
             lastToast?.cancel()
             preview?.visibility = View.INVISIBLE
             counter = 0
