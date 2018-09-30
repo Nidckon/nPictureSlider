@@ -10,11 +10,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
-import android.widget.ListView
+import android.widget.*
 
 class MainActivity : AppCompatActivity() {
     private val log = Logger.get()
@@ -97,8 +94,7 @@ class MainActivity : AppCompatActivity() {
         override fun getCount(): Int = list.size
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view: View = if (convertView != null) convertView
-                else parent.inflate(R.layout.image_entry)
+            val view: View = convertView ?: parent.inflate(R.layout.image_entry)
 
             val img = getItem(position)
             val target = view.findViewById<ImageView>(R.id.image)
