@@ -229,19 +229,26 @@ class GameActivity : AppCompatActivity() {
 
             private fun moveRow(startPosition: Int) {
                 log.i(this, "Move in Row[${this.r}]: $startPosition..${this.c}")
-//                for (position in startPosition downTo  this.c) {
-//                    val puzzle = images[this.c][position]
-//                    if (puzzle != null) {
-//                        if (puzzle.canBeMovedLeft())
-//                            puzzle.move(position - 1, this.r)
-//                        else if (puzzle.canBeMovedRight())
-//                            puzzle.move(position + 1, this.r)
-//                        if (puzzle.canBeMovedDown())
-//                            log.i(this, "Nani?! It can be moved down!")
-//                        if (puzzle.canBeMovedUp())
-//                            log.i(this, "Nani?! It can be moved up!")
-//                    }
-//                }
+                val forContent: (position: Int) -> Unit = { position ->
+                    run {
+                        val puzzle = images[position][this.r]
+                        if (puzzle != null) {
+                            if (puzzle.canBeMovedLeft())
+                                puzzle.move(position - 1, puzzle.r)
+                            else if (puzzle.canBeMovedRight())
+                                puzzle.move(position + 1, puzzle.r)
+                        }
+                    }
+                }
+                if (startPosition > 0) {
+                    for (position in startPosition downTo this.c) {
+                        forContent.invoke(position)
+                    }
+                } else {
+                    for (position in startPosition..this.c) {
+                        forContent.invoke(position)
+                    }
+                }
             }
 
             private fun changeVisiblePosition() {
