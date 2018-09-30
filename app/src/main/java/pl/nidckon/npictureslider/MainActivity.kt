@@ -12,20 +12,26 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import pl.nidckon.npictureslider.Settings.Companion.const
 
 class MainActivity : AppCompatActivity() {
     private val log = Logger.get()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val preferences = getSharedPreferences("pictureslider", 0)
         setContentView(R.layout.activity_main)
         log.i(this, "<< onCreate")
-        Settings.getSettings().size = preferences.getInt("size", Settings.getSettings().size)
-        log.i(this, "<< Settings-Size: ${Settings.getSettings().size}")
+        collectSettings()
         initGallery()
     }
 
+    private fun collectSettings() {
+        val preferences = getSharedPreferences(const.PREF_NAME, 0)
+        Settings.getSettings().size = preferences.getInt(const.SIZE, Settings.getSettings().size)
+        log.i(this, "<< Settings-Size: ${Settings.getSettings().size}")
+        Settings.getSettings().previewTime = preferences.getInt(const.TIME, Settings.getSettings().previewTime)
+        log.i(this, "<< Settings-Time: ${Settings.getSettings().previewTime}")
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)

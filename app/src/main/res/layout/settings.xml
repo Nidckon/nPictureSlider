@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <View style="@style/Divider"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,16 +38,48 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Rozmiar układanki" />
+                    android:text="Rozmiar układanki"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textSize="18sp" />
 
                 <Spinner
-                    android:id="@+id/spinner"
+                    android:id="@+id/partsAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAlignment="textEnd"
+                    android:gravity="end"
                     android:layout_weight="1"
                     android:dropDownWidth="match_parent"
                     android:entries="@array/puzzle_size" />
             </LinearLayout>
+            <View style="@style/Divider"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/scrollView2">
+
+                <TextView
+                    android:id="@+id/label2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Czas widoczności podglądu [s]:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/previewTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textEnd"
+                    android:gravity="end"
+                    android:layout_weight="1"
+                    android:dropDownWidth="match_parent"
+                    android:entries="@array/preview_time" />
+            </LinearLayout>
+            <View style="@style/Divider"/>
         </LinearLayout>
     </ScrollView>
 

@@ -3,6 +3,7 @@ package pl.nidckon.npictureslider
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -17,6 +18,9 @@ import java.util.*
 class GameActivity : AppCompatActivity() {
     val log = Logger.get()
     private var puzzle: PuzzleManager? = null
+    private var preview: RelativeLayout? = null
+    private var previewCounter: TextView? = null
+    private var counter: Int = 0
 
     companion object {
         val FIELD_PATH = "path"
@@ -33,6 +37,9 @@ class GameActivity : AppCompatActivity() {
         val bmp = createFromAssets(path, assets)
                 .fitToWindow(point.x, point.y)
         puzzle = PuzzleManager(bmp, findViewById(R.id.container))
+        preview = findViewById(R.id.previewContainer)
+        val previewImage = findViewById<ImageView>(R.id.preview)
+        previewImage.setImageBitmap(bmp)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -43,8 +50,8 @@ class GameActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.view_full_image -> {
-                Toast.makeText(this, "Pokaż pełny obraz", Toast.LENGTH_LONG).show()
                 log.i(this, "full image to vision")
+                onShowHidePreviewAction()
             }
             R.id.popup_numbers -> {
                 log.i(this, "show-hide numbers")
@@ -52,6 +59,76 @@ class GameActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+    private fun onShowHidePreviewAction() {
+        if (Settings.getSettings().previewTime == -1) {
+            showHideAction(counter == -1)
+        } else {
+            showHideTemporaryAction(counter > 0)
+        }
+    }
+
+    private fun showHideTemporaryAction(isVisible: Boolean = false) {
+        if (isVisible) {
+            log.i(this, "Show-Hide Temporary: isVisible[$isVisible] + operation: Hide")
+            this.counter = 0
+            preview?.visibility = View.INVISIBLE
+        } else {
+            val previewManager = ShowHidePreviewManager()
+            this.counter = Settings.getSettings().previewTime
+            log.i(this, "Show-Hide Temporary: isVisible[$isVisible] + counter[$counter] + operation: Show")
+            previewManager.execute()
+        }
+    }
+
+    private fun showHideAction(hide:Boolean = true) {
+        if (hide) {
+            log.i(this, "Show-Hide Action: want to hide[$hide], counter[$counter]")
+            counter = 0
+            preview?.visibility = View.INVISIBLE
+        } else {
+            log.i(this, "Show-Hide Action: want to hide[$hide], counter[$counter]")
+            counter = -1
+            preview?.visibility = View.VISIBLE
+        }
+    }
+
+    private inner class ShowHidePreviewManager : AsyncTask<Any, Double, Boolean>() {
+        private var lastToast: Toast? = null
+        override fun onProgressUpdate(vararg values: Double?) {
+            val showValue = values[0]?.toInt()?.plus(1)
+            log.i(this, "Preview-Update: time[$showValue]")
+            lastToast = Toast.makeText(baseContext, "${showValue}s", Toast.LENGTH_SHORT)
+            lastToast?.show()
+        }
+
+        override fun onPreExecute() {
+            log.i(this, "Preview-Pre: show Preview")
+            preview?.visibility = View.VISIBLE
+        }
+
+        override fun doInBackground(vararg params: Any?): Boolean? {
+            var innerCounter = 0.0
+            while (counter > 0) {
+                if (innerCounter >= 1.0) {
+                    innerCounter = 0.0
+                    counter--
+                    log.i(this, "Preview-Timer: 1s elapsed, counter[$counter]")
+                }
+                Thread.sleep(100)
+                innerCounter += 0.1
+                publishProgress(counter - innerCounter)
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            log.i(this, "Preview-Post: hide Preview")
+            lastToast?.cancel()
+            preview?.visibility = View.INVISIBLE
+            counter = 0
+        }
     }
 
     private inner class PuzzleManager(private val bmp:Bitmap, private val container:RelativeLayout) {
