@@ -1,7 +1,9 @@
 package pl.nidckon.npictureslider
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -14,9 +16,14 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import pl.nidckon.npictureslider.Settings.Companion.const
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val log = Logger.get()
+
+    companion object {
+        private val SELECT_IMAGE = 15
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +56,39 @@ class MainActivity : AppCompatActivity() {
                 val emailIntent = Logger.get().prepareEmail(baseContext)
                 startActivity(Intent.createChooser(emailIntent, "Wyślij raport"))
             }
+            R.id.imageChooser -> {
+                log.i(this, "invoke ImageChooser")
+                onImageChoose()
+            }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
+    private fun onImageChoose() {
+        val newIntent = Intent(Intent.ACTION_GET_CONTENT)
+        newIntent.setType("image/*")
+        newIntent.addCategory(Intent.CATEGORY_OPENABLE)
+        if (newIntent.resolveActivity(packageManager) != null) {
+            log.i(this, "ImageChooser - invoke")
+            startActivityForResult(newIntent, SELECT_IMAGE)
+        } else {
+            log.i(this, "intent resolve activity null")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        log.i(this, "on result: ${Arrays.asList(requestCode, resultCode, data)}")
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MainActivity.SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
+            if (data?.data != null) {
+                val uri = data.data
+                val newIntent = Intent(baseContext, GameActivity::class.java)
+                newIntent.putExtra(GameActivity.FIELD_URI, uri.getPath(baseContext))
+                startActivity(newIntent)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
     private fun initGallery() {
         val galleryList = getAssetsGalleryList()

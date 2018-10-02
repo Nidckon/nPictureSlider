@@ -19,22 +19,24 @@ class GameActivity : AppCompatActivity() {
     val log = Logger.get()
     private var puzzle: PuzzleManager? = null
     private var preview: RelativeLayout? = null
-    private var previewCounter: TextView? = null
     private var counter: Int = 0
 
     companion object {
         val FIELD_PATH = "path"
+        val FIELD_URI = "uri"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        val path: String = intent.getStringExtra("path")
+        val path: String? = intent.getStringExtra(GameActivity.FIELD_PATH)
+        val uri: String? = intent.getStringExtra(GameActivity.FIELD_URI)
         log.i(this, ">> path: $path")
+        log.i(this, ">> uri: $uri")
         if (path == "") throw IllegalStateException("path is null!")
         val point = windowManager.defaultDisplay.getSquare()
-        val bmp = createFromAssets(path, assets)
+        val bmp = createFromUriOrAssets(uri, path, assets)
                 .fitToWindow(point.x, point.y)
         puzzle = PuzzleManager(bmp, findViewById(R.id.container))
         preview = findViewById(R.id.previewContainer)

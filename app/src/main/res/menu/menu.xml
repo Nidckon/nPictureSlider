@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/imageChooser"
+        android:icon="@android:drawable/ic_menu_report_image"
+        android:title="image"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/settings"
         android:icon="@android:drawable/ic_menu_manage"
         android:title="Settings"
