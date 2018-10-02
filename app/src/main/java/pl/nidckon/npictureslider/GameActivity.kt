@@ -214,7 +214,7 @@ class GameActivity : AppCompatActivity() {
             private fun initContent() {
                 imageView = findViewById(R.id.image)
                 number = findViewById(R.id.text)
-                val no = c * cols + r
+                val no = c + r * rows
                 number?.text = "$no"
             }
 
