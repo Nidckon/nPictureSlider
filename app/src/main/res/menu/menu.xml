@@ -11,13 +11,13 @@
     <item
         android:id="@+id/settings"
         android:icon="@android:drawable/ic_menu_manage"
-        android:title="Settings"
+        android:title="Ustawienia"
         android:visible="true"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/report_bug"
         android:icon="@android:drawable/ic_dialog_alert"
-        android:title="bug"
+        android:title="bug report"
         android:visible="true"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>
