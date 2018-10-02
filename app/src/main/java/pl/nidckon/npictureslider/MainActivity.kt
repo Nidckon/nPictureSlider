@@ -10,11 +10,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.ListView
+import android.widget.*
 import pl.nidckon.npictureslider.Settings.Companion.const
+import java.lang.Exception
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -82,8 +80,15 @@ class MainActivity : AppCompatActivity() {
             if (data?.data != null) {
                 val uri = data.data
                 val newIntent = Intent(baseContext, GameActivity::class.java)
-                newIntent.putExtra(GameActivity.FIELD_URI, uri.getPath(baseContext))
-                startActivity(newIntent)
+                try {
+                    val truePath = uri.getPath(baseContext)
+                    log.i(this, "true path to choosed file {path= $truePath}")
+                    newIntent.putExtra(GameActivity.FIELD_URI, truePath)
+                    startActivity(newIntent)
+                } catch (e:Exception) {
+                    log.d(this, "fail onActivityResult: ${e.message}")
+                    Toast.makeText(baseContext, "Coś poszło nie tak...", Toast.LENGTH_LONG).show()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
