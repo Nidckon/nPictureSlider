@@ -15,7 +15,6 @@ import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import java.io.BufferedInputStream
 import java.io.File
 
 // to inflate in BaseAdapter
@@ -25,14 +24,14 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
 
 // create Bitmap from assets
 fun createFromUriOrAssets(uri: String?, path: String?, assets: AssetManager): Bitmap =
-    if (uri != null) createFromUri(uri) else createFromAssets(path!!, assets)
+        if (uri != null) createFromUri(uri) else createFromAssets(path!!, assets)
 
 fun createFromAssets(path: String, assets: AssetManager): Bitmap {
     val stream = assets.open(path)
     return BitmapFactory.decodeStream(stream)
 }
 
-fun createFromUri(uriPath:String): Bitmap {
+fun createFromUri(uriPath: String): Bitmap {
     val file = File(uriPath)
     val inputStream = file.inputStream()
     val bmp = BitmapFactory.decodeStream(inputStream)
