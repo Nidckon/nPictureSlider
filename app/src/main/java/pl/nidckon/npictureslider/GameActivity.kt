@@ -22,8 +22,8 @@ class GameActivity : AppCompatActivity() {
     private var counter: Int = 0
 
     companion object {
-        val FIELD_PATH = "path"
-        val FIELD_URI = "uri"
+        const val FIELD_PATH = "path"
+        const val FIELD_URI = "uri"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,8 +135,8 @@ class GameActivity : AppCompatActivity() {
 
     private inner class PuzzleManager(private val bmp: Bitmap, private val container: RelativeLayout) {
         private val images: Array<Array<PicturePart?>>
-        val ROWS = Settings.getSettings().size
-        val COLS = Settings.getSettings().size
+        val rows = Settings.getSettings().size
+        val cols = Settings.getSettings().size
 
         init {
             log.i(this, "init")
@@ -147,12 +147,12 @@ class GameActivity : AppCompatActivity() {
 
         fun manageNumbers() = this.images.forEach { e -> e.forEach { img -> img?.manageNumber() } }
 
-        private fun createCols(): Array<Array<PicturePart?>> = Array(COLS) { createRows(it) }
-        private fun createRows(c: Int): Array<PicturePart?> = Array(ROWS) { createImageView(c, it) }
+        private fun createCols(): Array<Array<PicturePart?>> = Array(cols) { createRows(it) }
+        private fun createRows(c: Int): Array<PicturePart?> = Array(rows) { createImageView(c, it) }
 
         private fun createImageView(c: Int, r: Int): PicturePart? {
-            if (c * r == (COLS - 1) * (ROWS - 1)) return null
-            val bitmap = bmp.cut(c, r, COLS, ROWS)
+            if (c * r == (cols - 1) * (rows - 1)) return null
+            val bitmap = bmp.cut(c, r, cols, rows)
             val imageView = PicturePart(baseContext, c, r, bitmap.width, bitmap.height)
             imageView.setImageBitmap(bitmap)
             container.addView(imageView)
@@ -161,45 +161,45 @@ class GameActivity : AppCompatActivity() {
 
         private fun random() {
             val rand = Random()
-            for (i in 0..ROWS * COLS * ROWS) {
+            for (i in 0..rows * cols * rows) {
                 val n = getNullPos()
-                var _c = n.x
-                var _r = n.y
+                var c = n.x
+                var r = n.y
                 if (rand.nextBoolean()) {
                     if (rand.nextBoolean()) {
-                        if (_c + 1 < COLS) _c += 1
-                        else _c -= 1
+                        if (c + 1 < cols) c += 1
+                        else c -= 1
                     } else {
-                        if (_c - 1 > -1) _c -= 1
-                        else _c += 1
+                        if (c - 1 > -1) c -= 1
+                        else c += 1
                     }
                 } else {
                     if (rand.nextBoolean()) {
-                        if (_r + 1 < COLS) _r += 1
-                        else _r -= 1
+                        if (r + 1 < cols) r += 1
+                        else r -= 1
                     } else {
-                        if (_r - 1 > -1) _r -= 1
-                        else _r += 1
+                        if (r - 1 > -1) r -= 1
+                        else r += 1
                     }
                 }
-                images[_c][_r]?.callOnClick()
+                images[c][r]?.callOnClick()
             }
         }
 
         private fun getNullPos(): Point =
-                images.withIndex().filter {
-                    !it.value.filter { it == null }.isEmpty()
-                }.map {
-                    val _c = it.index
+                images.withIndex().filter { it ->
+                    !it.value.none { it == null }
+                }.map { it ->
+                    val c = it.index
                     it.value.withIndex().filter {
                         it.value == null
                     }.map {
-                        val _r = it.index
-                        Point(_c, _r)
+                        val r = it.index
+                        Point(c, r)
                     }.first()
                 }.first()
 
-        private inner class PicturePart(private val ctx: Context, private var c: Int, private var r: Int, val widthB: Int, val heightB: Int) : RelativeLayout(ctx) {
+        private inner class PicturePart(ctx: Context, private var c: Int, private var r: Int, val widthB: Int, val heightB: Int) : RelativeLayout(ctx) {
             private var imageView: ImageView? = null
             private var number: TextView? = null
             var numberVisibility: Boolean = false
@@ -214,7 +214,7 @@ class GameActivity : AppCompatActivity() {
             private fun initContent() {
                 imageView = findViewById(R.id.image)
                 number = findViewById(R.id.text)
-                val no = c * COLS + r
+                val no = c * cols + r
                 number?.text = "$no"
             }
 
@@ -344,14 +344,14 @@ class GameActivity : AppCompatActivity() {
             private fun moveRight() = move(c + 1, r)
 
             fun canBeMovedUp(): Boolean = this.r - 1 > -1 && images[c][r - 1] == null
-            fun canBeMovedDown(): Boolean = this.r + 1 < ROWS && images[c][r + 1] == null
+            fun canBeMovedDown(): Boolean = this.r + 1 < rows && images[c][r + 1] == null
             fun canBeMovedLeft(): Boolean = this.c - 1 > -1 && images[c - 1][r] == null
-            fun canBeMovedRight(): Boolean = this.c + 1 < COLS && images[c + 1][r] == null
+            fun canBeMovedRight(): Boolean = this.c + 1 < cols && images[c + 1][r] == null
 
             private fun moveColUp() = moveCol(0)
-            private fun moveColDown() = moveCol(ROWS - 1)
+            private fun moveColDown() = moveCol(rows - 1)
             private fun moveRowLeft() = moveRow(0)
-            private fun moveRowRight() = moveRow(COLS - 1)
+            private fun moveRowRight() = moveRow(cols - 1)
 
             fun canBeMovedInColUp(): Boolean =
                     this.r - 1 > -1 && images[this.c].filterIndexed { index, _ ->
@@ -359,7 +359,7 @@ class GameActivity : AppCompatActivity() {
                     }.any { e -> e == null }
 
             fun canBeMovedInColDown(): Boolean =
-                    this.r + 1 < ROWS && images[this.c].filterIndexed { index, _ ->
+                    this.r + 1 < rows && images[this.c].filterIndexed { index, _ ->
                         index > this.r
                     }.any { e -> e == null }
 
@@ -369,7 +369,7 @@ class GameActivity : AppCompatActivity() {
                     }.any { e -> e[this.r] == null }
 
             fun canBeMovedInRowRight(): Boolean =
-                    this.c + 1 < COLS && images.filterIndexed { index, _ ->
+                    this.c + 1 < cols && images.filterIndexed { index, _ ->
                         index > this.c
                     }.any { e -> e[this.r] == null }
         }

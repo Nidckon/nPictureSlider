@@ -63,8 +63,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun onImageChoose() {
         val newIntent = Intent(Intent.ACTION_GET_CONTENT)
-        newIntent.setType("image/*")
-        newIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("image/*")
+                .addCategory(Intent.CATEGORY_OPENABLE)
         if (newIntent.resolveActivity(packageManager) != null) {
             log.i(this, "ImageChooser - invoke")
             startActivityForResult(newIntent, SELECT_IMAGE)
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         val path = (parent.adapter as GalleryAdapter).getItemKey(position)
         log.d(this, "__Sensitive - path: $path")
         Log.i("nPS:${this::javaClass.name}", "Have object: $path")
-        var intent = Intent(baseContext, GameActivity::class.java)
+        val intent = Intent(baseContext, GameActivity::class.java)
         intent.putExtra(GameActivity.FIELD_PATH, path)
         startActivity(intent)
     }
