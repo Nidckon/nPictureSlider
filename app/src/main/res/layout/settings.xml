@@ -45,10 +45,10 @@
                 <Spinner
                     android:id="@+id/partsAmount"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:textAlignment="textEnd"
                     android:gravity="end"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:dropDownWidth="match_parent"
                     android:entries="@array/puzzle_size" />
             </LinearLayout>
@@ -72,10 +72,10 @@
                 <Spinner
                     android:id="@+id/previewTime"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="fill_parent"
                     android:textAlignment="textEnd"
                     android:gravity="end"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:dropDownWidth="match_parent"
                     android:entries="@array/preview_time" />
             </LinearLayout>
