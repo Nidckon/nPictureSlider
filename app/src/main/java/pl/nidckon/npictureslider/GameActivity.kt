@@ -9,10 +9,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_game.*
 import java.util.*
 
 class GameActivity : AppCompatActivity() {
@@ -20,6 +22,8 @@ class GameActivity : AppCompatActivity() {
     private var puzzle: PuzzleManager? = null
     private var preview: RelativeLayout? = null
     private var counter: Int = 0
+    private var isResolved: Boolean = false
+    private var isReady: Boolean = false
 
     companion object {
         const val FIELD_PATH = "path"
@@ -42,6 +46,24 @@ class GameActivity : AppCompatActivity() {
         preview = findViewById(R.id.previewContainer)
         val previewImage = findViewById<ImageView>(R.id.preview)
         previewImage.setImageBitmap(bmp)
+        isReady = true
+        findViewById<RelativeLayout>(R.id.container).setOnClickListener {
+            if (isReady) {
+                isResolved = puzzle?.isResolved()?: false
+                if (isResolved) {
+                    showFull()
+                }
+            }
+        }
+    }
+
+    private fun showFull() {
+        isReady = false
+        findViewById<RelativeLayout>(R.id.container)
+                .visibility = View.INVISIBLE
+        val preview = findViewById<RelativeLayout>(R.id.previewContainer)
+        preview.findViewById<TextView>(R.id.previewText).visibility = View.GONE
+        preview.visibility = View.VISIBLE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -53,7 +75,9 @@ class GameActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.view_full_image -> {
                 log.i(this, "full image to vision")
-                onShowHidePreviewAction()
+                if (isReady) {
+                    onShowHidePreviewAction()
+                }
             }
             R.id.popup_numbers -> {
                 log.i(this, "show-hide numbers")
@@ -64,10 +88,12 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun onShowHidePreviewAction() {
-        if (Settings.getSettings().previewTime == -1) {
-            showHideAction(counter == -1)
-        } else {
-            showHideTemporaryAction(counter > 0)
+        if (isResolved.not()) {
+            if (Settings.getSettings().previewTime == -1) {
+                showHideAction(counter == -1)
+            } else {
+                showHideTemporaryAction(counter > 0)
+            }
         }
     }
 
@@ -145,6 +171,15 @@ class GameActivity : AppCompatActivity() {
             container.invalidate()
         }
 
+        //TODO
+        fun isResolved(): Boolean = images
+                .map(this::isResolvedRow)
+                .none { isRowGood -> !isRowGood }
+
+        private fun isResolvedRow(row:Array<PicturePart?>): Boolean =
+                row.map { picturePart -> picturePart?.isGoodPosition() ?: true }
+                    .none { isPositionGood -> !isPositionGood }
+
         fun manageNumbers() = this.images.forEach { e -> e.forEach { img -> img?.manageNumber() } }
 
         private fun createCols(): Array<Array<PicturePart?>> = Array(cols) { createRows(it) }
@@ -214,9 +249,11 @@ class GameActivity : AppCompatActivity() {
             private fun initContent() {
                 imageView = findViewById(R.id.image)
                 number = findViewById(R.id.text)
-                val no = c + r * rows
-                number?.text = "$no"
+                number?.text = "${c + r * rows}"
             }
+
+            fun isGoodPosition(): Boolean = arrayOf(number?.text!!)
+                    .any { text -> text == "${c + r * rows}" }
 
             private fun initPosition() {
                 this.setOnClickListener {
@@ -230,6 +267,10 @@ class GameActivity : AppCompatActivity() {
                         canBeMovedInRowLeft() -> moveRowLeft()
                         canBeMovedInRowRight() -> moveRowRight()
                     }
+                    val parentGroup = this as ViewGroup
+                    val parentView = parentGroup.parent as RelativeLayout
+                    parentView.callOnClick()
+
                 }
                 val params = RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT,
