@@ -171,7 +171,6 @@ class GameActivity : AppCompatActivity() {
             container.invalidate()
         }
 
-        //TODO
         fun isResolved(): Boolean = images
                 .map(this::isResolvedRow)
                 .none { isRowGood -> !isRowGood }
